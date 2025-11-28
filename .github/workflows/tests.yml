@@ -1,0 +1,47 @@
+name: 🧪 Testes Automatizados
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    name: Executar Testes
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    
+    steps:
+    - name: 📥 Checkout do código
+      uses: actions/checkout@v4
+    
+    - name: 🟢 Configurar Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    
+    - name: 📦 Instalar dependências
+      run: npm ci
+    
+    - name: 🧪 Executar testes
+      run: npm test
+    
+    - name: 📊 Upload de cobertura
+      if: matrix.node-version == '20.x'
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report
+        path: coverage/
+    
+    - name: ✅ Status dos testes
+      if: success()
+      run: echo "✅ Todos os testes passaram!"
+    
+    - name: ❌ Falha nos testes
+      if: failure()
+      run: echo "❌ Alguns testes falharam. Verifique os logs acima."

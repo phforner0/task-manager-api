@@ -1,0 +1,53 @@
+name: 🚀 Deploy Automático
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Executar Testes antes do Deploy
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout
+      uses: actions/checkout@v4
+    
+    - name: 🟢 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+    
+    - name: 📦 Instalar dependências
+      run: npm ci
+    
+    - name: 🧪 Rodar testes
+      run: npm test
+
+  deploy:
+    name: Deploy para Render
+    needs: test
+    runs-on: ubuntu-latest
+    if: success()
+    
+    steps:
+    - name: 📥 Checkout
+      uses: actions/checkout@v4
+    
+    - name: 🚀 Deploy para Render
+      env:
+        RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+      run: |
+        if [ -n "$RENDER_DEPLOY_HOOK" ]; then
+          curl -X POST "$RENDER_DEPLOY_HOOK"
+          echo "✅ Deploy iniciado no Render!"
+        else
+          echo "⚠️ RENDER_DEPLOY_HOOK não configurado"
+          echo "Configure em: Settings > Secrets > Actions"
+        fi
+    
+    - name: ✅ Deploy concluído
+      run: |
+        echo "🎉 Deploy realizado com sucesso!"
+        echo "Acesse sua API em: https://seu-app.onrender.com"
