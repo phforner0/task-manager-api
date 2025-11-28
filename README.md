@@ -5,7 +5,6 @@
 ![Node.js](https://img.shields.io/badge/Node.js-20.x-green)
 ![Express](https://img.shields.io/badge/Express-4.18-blue)
 ![Tests](https://img.shields.io/badge/Tests-Passing-success)
-![License](https://img.shields.io/badge/License-MIT-yellow)
 
 ## 🚀 Sobre o Projeto
 
