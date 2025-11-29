@@ -129,6 +129,24 @@ app.delete('/tasks/:id', (req, res) => {
   });
 });
 
+// Rota raiz (página inicial)
+app.get('/', (req, res) => {
+  res.json({
+    message: '🚀 Task Manager API',
+    version: '1.0.0',
+    status: 'online',
+    endpoints: {
+      health: '/health',
+      tasks: '/tasks',
+      createTask: 'POST /tasks',
+      getTask: 'GET /tasks/:id',
+      updateTask: 'PUT /tasks/:id',
+      deleteTask: 'DELETE /tasks/:id'
+    },
+    documentation: 'https://github.com/seu-usuario/task-manager-api'
+  });
+});
+
 // Rota de saúde (health check)
 app.get('/health', (req, res) => {
   res.json({
